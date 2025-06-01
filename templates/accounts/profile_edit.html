@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4" style="max-width: 600px;">
+    <!-- Заголовок страницы редактирования профиля -->
+    <h2>Edytuj profil</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <!-- Кнопка «Сохранить изменения» -->
+        <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
+        <!-- Кнопка «Отмена» -->
+        <a href="{% url 'accounts:profile' %}" class="btn btn-secondary">Anuluj</a>
+    </form>
+</div>
+{% endblock %}

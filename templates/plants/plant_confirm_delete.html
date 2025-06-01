@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container" style="max-width: 600px;">
+    <div class="alert alert-warning mt-4">
+        <h4 class="alert-heading">Potwierdzenie usunięcia</h4>
+        <p>
+            Czy na pewno chcesz usunąć roślinę <strong>{{ plant.nazwa }}</strong>?
+            Tej operacji nie można cofnąć.
+        </p>
+    </div>
+
+    <form method="post" class="d-flex justify-content-between">
+        {% csrf_token %}
+        <a href="{% url 'plants:detail' plant.pk %}" class="btn btn-secondary">Anuluj</a>
+        <button type="submit" class="btn btn-danger">Usuń</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        {% if plant.zdjecie %}
+            <img src="{{ plant.zdjecie.url }}" class="img-fluid rounded shadow-sm mb-3" alt="{{ plant.nazwa }}">
+        {% else %}
+            <div class="bg-light border rounded p-5 text-center text-muted">Brak zdjęcia</div>
+        {% endif %}
+    </div>
+
+    <div class="col-md-6">
+        <h2 class="fw-bold">{{ plant.nazwa }}</h2>
+        <p class="text-muted">{{ plant.gatunek }}</p>
+
+        <ul class="list-group list-group-flush mb-3">
+            <li class="list-group-item"><strong>Kategoria:</strong> {{ plant.kategoria }}</li>
+            <li class="list-group-item"><strong>Ostatnie podlewanie:</strong> {{ plant.ostatnie_podlanie|default:"—" }}</li>
+            <li class="list-group-item"><strong>Podlewanie co:</strong> {{ plant.interwal_podlania }} dni</li>
+            <li class="list-group-item"><strong>Nawożenie co:</strong> {{ plant.interwal_nawozenia }} dni</li>
+            <li class="list-group-item"><strong>Przesadzanie co:</strong> {{ plant.interwal_przesadzania }} dni</li>
+            <li class="list-group-item"><strong>Oświetlenie:</strong> {{ plant.get_oswietlenie_display }}</li>
+            {% if plant.ph_min and plant.ph_max %}
+                <li class="list-group-item"><strong>pH:</strong> {{ plant.ph_min }} - {{ plant.ph_max }}</li>
+            {% endif %}
+            {% if plant.uwagi %}
+                <li class="list-group-item"><strong>Uwagi:</strong> {{ plant.uwagi }}</li>
+            {% endif %}
+        </ul>
+
+        <div class="d-flex gap-2">
+            <a href="{% url 'plants:edit' plant.pk %}" class="btn btn-warning">Edytuj</a>
+            <a href="{% url 'plants:delete' plant.pk %}" class="btn btn-danger">Usuń</a>
+            <a href="{% url 'plants:list' %}" class="btn btn-secondary ms-auto">Powrót</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -7,15 +7,12 @@ from django.views.generic import RedirectView
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    # Приложение accounts: регистрация, вход, профиль
     path('accounts/', include('apps.accounts.urls')),
-
-    # Здесь позже будут другие приложения:
-    # path('plants/', include('apps.plants.urls')),
-    # ...
-
-    # Редирект с корня на, например, страницу входа (или другую)
-    path('', RedirectView.as_view(pattern_name='accounts:login', permanent=False)),
+    path('rosliny/', include('apps.plants.urls')),
+    path('zadania/', include('apps.scheduler.urls')),
+    path('obserwacje/', include('apps.observations.urls')),
+    path('statystyki/', include('apps.analytics.urls')),
+    path('', RedirectView.as_view(pattern_name='plants:list', permanent=False)),
 ]
 
 if settings.DEBUG:

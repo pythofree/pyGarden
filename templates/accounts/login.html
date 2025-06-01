@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container" style="max-width: 500px;">
+    <h2 class="fw-bold mb-4">🔐 Zaloguj się</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <div class="mt-4 d-flex justify-content-between">
+            <a href="{% url 'accounts:register' %}" class="btn btn-outline-secondary">Rejestracja</a>
+            <button type="submit" class="btn btn-primary">Zaloguj się</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

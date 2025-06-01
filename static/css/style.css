@@ -1,0 +1,54 @@
+/* 🌿 Светлая тема */
+body {
+    background: linear-gradient(to right, #e0f7fa, #f1f8e9);
+    font-family: 'Segoe UI', sans-serif;
+    color: #333;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.navbar {
+    background-color: #4a69bd !important;
+}
+
+.navbar .nav-link,
+.navbar .navbar-brand,
+.navbar .dropdown-toggle {
+    color: #ffffff !important;
+    font-weight: 500;
+    text-shadow: none;
+}
+
+.navbar .nav-link:hover,
+.navbar .dropdown-toggle:hover {
+    color: #ffeb3b !important;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border-radius: 10px;
+    background-color: #fff;
+    color: #333;
+    transition: all 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: scale(1.01);
+}
+
+h2 {
+    font-weight: 600;
+}
+
+.btn-primary {
+    background-color: #4a69bd;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #3b5ba2;
+}
+
+input, select, textarea {
+    border-radius: 6px !important;
+}

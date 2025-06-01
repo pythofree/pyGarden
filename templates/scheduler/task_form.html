@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container" style="max-width: 600px;">
+    <h2 class="fw-bold mb-4">
+        {% if object %}Edytuj zadanie{% else %}Dodaj zadanie{% endif %}
+    </h2>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="mt-4 d-flex justify-content-between">
+            <a href="{% url 'tasks:list' %}" class="btn btn-secondary">Anuluj</a>
+            <button type="submit" class="btn btn-primary">
+                {% if object %}Zapisz zmiany{% else %}Dodaj{% endif %}
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

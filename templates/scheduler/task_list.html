@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">📝 Moje zadania</h2>
+    <a href="{% url 'tasks:add' %}" class="btn btn-primary">Dodaj zadanie</a>
+</div>
+
+{% if zadania %}
+    <ul class="list-group">
+        {% for task in zadania %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>{{ task.data }}</strong> – {{ task.typ }} ({{ task.plant.nazwa }})
+                    {% if task.wykonane %}
+                        <span class="badge bg-success ms-2">Wykonane</span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark ms-2">Oczekujące</span>
+                    {% endif %}
+                </div>
+                <div>
+                    <a href="{% url 'tasks:edit' task.pk %}" class="btn btn-sm btn-outline-warning">Edytuj</a>
+                    <a href="{% url 'tasks:delete' task.pk %}" class="btn btn-sm btn-outline-danger">Usuń</a>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <div class="alert alert-info">
+        Brak zadań. <a href="{% url 'tasks:add' %}">Dodaj pierwsze zadanie</a>.
+    </div>
+{% endif %}
+{% endblock %}

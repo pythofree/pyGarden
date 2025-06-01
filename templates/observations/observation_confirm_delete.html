@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container" style="max-width: 600px;">
+    <div class="alert alert-warning mt-4">
+        <h4 class="alert-heading">Potwierdzenie usunięcia</h4>
+        <p>
+            Czy na pewno chcesz usunąć obserwację rośliny
+            <strong>{{ observation.plant.nazwa }}</strong> z dnia
+            <strong>{{ observation.data }}</strong>?
+        </p>
+    </div>
+
+    <form method="post" class="d-flex justify-content-between">
+        {% csrf_token %}
+        <a href="{% url 'observations:list' %}" class="btn btn-secondary">Anuluj</a>
+        <button type="submit" class="btn btn-danger">Usuń</button>
+    </form>
+</div>
+{% endblock %}

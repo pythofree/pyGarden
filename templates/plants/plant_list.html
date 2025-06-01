@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">🌿 Moje rośliny</h2>
+    <a href="{% url 'plants:add' %}" class="btn btn-primary">Dodaj roślinę</a>
+</div>
+
+{% if plants %}
+    <div class="row">
+        {% for plant in plants %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    {% if plant.zdjecie %}
+                        <img src="{{ plant.zdjecie.url }}" class="card-img-top" alt="{{ plant.nazwa }}" style="height: 200px; object-fit: cover;">
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ plant.nazwa }}</h5>
+                        <p class="card-text text-muted">{{ plant.gatunek }}</p>
+                        <a href="{% url 'plants:detail' plant.pk %}" class="btn btn-outline-primary mt-auto">Szczegóły</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if is_paginated %}
+        <nav>
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Poprzednia</a>
+                    </li>
+                {% endif %}
+                <li class="page-item disabled">
+                    <span class="page-link">Strona {{ page_obj.number }} z {{ page_obj.paginator.num_pages }}</span>
+                </li>
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Następna</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+{% else %}
+    <div class="alert alert-info">
+        Nie masz jeszcze żadnych roślin. <a href="{% url 'plants:add' %}">Dodaj pierwszą roślinę</a>.
+    </div>
+{% endif %}
+{% endblock %}
