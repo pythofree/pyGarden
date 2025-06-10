@@ -7,19 +7,41 @@
     <a href="{% url 'tasks:add' %}" class="btn btn-primary">Dodaj zadanie</a>
 </div>
 
+{% if weather %}
+    <div class="alert alert-info d-flex align-items-center gap-3 mb-4">
+        🌦 Pogoda w Twoim mieście:
+        <strong>{{ weather.temp }}°C, {{ weather.desc|capfirst }}</strong>
+        <span class="text-muted">(Wilgotność: {{ weather.humidity }}%)</span>
+    </div>
+{% endif %}
+
 {% if zadania %}
     <ul class="list-group">
         {% for task in zadania %}
             <li class="list-group-item d-flex justify-content-between align-items-center">
                 <div>
-                    <strong>{{ task.data }}</strong> – {{ task.typ }} ({{ task.plant.nazwa }})
-                    {% if task.wykonane %}
+                    <strong>{{ task.data }}</strong> –
+                    {% if task.typ %}
+                        {{ task.typ.nazwa|default:"—" }}
+                    {% else %}
+                        <em>(brak typu)</em>
+                    {% endif %}
+                    ({{ task.plant.nazwa }})
+
+                    {% if task.skip_reason %}
+                        <span class="badge bg-info text-dark ms-2">{{ task.skip_reason }}</span>
+                    {% elif task.wykonane %}
                         <span class="badge bg-success ms-2">Wykonane</span>
                     {% else %}
                         <span class="badge bg-warning text-dark ms-2">Oczekujące</span>
                     {% endif %}
                 </div>
-                <div>
+                <div class="d-flex gap-2">
+                    {% if not task.wykonane %}
+                        <a href="{% url 'tasks:mark_done' task.pk %}" class="btn btn-sm btn-outline-success">
+                            ✅ Wykonaj
+                        </a>
+                    {% endif %}
                     <a href="{% url 'tasks:edit' task.pk %}" class="btn btn-sm btn-outline-warning">Edytuj</a>
                     <a href="{% url 'tasks:delete' task.pk %}" class="btn btn-sm btn-outline-danger">Usuń</a>
                 </div>

@@ -7,6 +7,7 @@ app_name = 'accounts'
 urlpatterns = [
     # Регистрация
     path('register/', views.RegisterView.as_view(), name='register'),
+    path('eksport/json/', views.export_json, name='export_json'),
 
     # Вход и выход (используем стандартные вьюхи Django)
     path('login/', auth_views.LoginView.as_view(template_name='accounts/login.html'), name='login'),

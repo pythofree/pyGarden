@@ -14,4 +14,7 @@ urlpatterns = [
     path('<int:pk>/edytuj/', views.PlantUpdateView.as_view(), name='edit'),
     # Удаление растения (по ID)
     path('<int:pk>/usun/', views.PlantDeleteView.as_view(), name='delete'),
+
+    path('<int:pk>/wykonaj/', views.mark_task_done, name='mark_done'),
+
 ]

@@ -11,7 +11,7 @@
         {% csrf_token %}
         {{ form.as_p }}
         <div class="mt-4 d-flex justify-content-between">
-            <a href="{% url 'tasks:list' %}" class="btn btn-secondary">Anuluj</a>
+            <a href="{% url 'tasks:calendar' %}" class="btn btn-secondary">Anuluj</a>
             <button type="submit" class="btn btn-primary">
                 {% if object %}Zapisz zmiany{% else %}Dodaj{% endif %}
             </button>

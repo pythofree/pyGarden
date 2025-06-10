@@ -8,10 +8,24 @@
             <h4 class="card-title mb-3">👤 Profil użytkownika</h4>
             <p><strong>Nazwa użytkownika:</strong> {{ user.username }}</p>
             <p><strong>Email:</strong> {{ user.email|default:"(brak adresu e-mail)" }}</p>
+            <p><strong>Strefa czasowa:</strong> {{ user.profile.timezone }}</p>
 
-            <div class="mt-4 d-flex justify-content-end">
-                <a href="{% url 'plants:list' %}" class="btn btn-primary">Przejdź do roślin</a>
-            </div>
+            <p><strong>Powiadomienia:</strong> {{ user.profile.notifications_enabled|yesno:"Tak,Nie" }}</p>
+            <p><strong>Miasto:</strong> {{ user.profile.city }}</p>
+
+
+           <div class="mt-4 d-flex justify-content-between">
+    <div>
+        <a href="{% url 'accounts:profile_edit' %}" class="btn btn-warning">Edytuj profil</a>
+    </div>
+               <div>
+                   <a href="{% url 'accounts:export_json' %}" class="btn btn-outline-secondary">📁 Eksport danych (JSON)</a>
+</div>
+    <div>
+        <a href="{% url 'plants:list' %}" class="btn btn-primary">Przejdź do roślin</a>
+    </div>
+</div>
+
         </div>
     </div>
 </div>

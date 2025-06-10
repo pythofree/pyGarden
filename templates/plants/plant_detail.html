@@ -5,7 +5,7 @@
 <div class="row">
     <div class="col-md-6">
         {% if plant.zdjecie %}
-            <img src="{{ plant.zdjecie.url }}" class="img-fluid rounded shadow-sm mb-3" alt="{{ plant.nazwa }}">
+            <img src="{{ plant.zdjecie.url }}" style="max-width: 430px;" class="img-fluid rounded shadow-sm mb-3" alt="{{ plant.nazwa }}">
         {% else %}
             <div class="bg-light border rounded p-5 text-center text-muted">Brak zdjęcia</div>
         {% endif %}
@@ -37,4 +37,64 @@
         </div>
     </div>
 </div>
+
+<hr class="my-5">
+<h4 class="fw-bold mb-3">📌 Zadania powiązane z tą rośliną</h4>
+
+{% if zadania %}
+    <ul class="list-group">
+        {% for task in zadania %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>{{ task.data }}</strong> – {{ task.typ.nazwa }}
+                    {% if task.wykonane %}
+                        <span class="badge bg-success ms-2">Wykonane</span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark ms-2">Oczekujące</span>
+                    {% endif %}
+                </div>
+                {% if not task.wykonane %}
+                    <form method="post" action="{% url 'tasks:mark_done' task.pk %}">
+                        {% csrf_token %}
+                        <button class="btn btn-sm btn-outline-success">✅ Wykonaj</button>
+                    </form>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <div class="alert alert-info">Brak przypisanych zadań.</div>
+{% endif %}
+
+<hr class="my-5">
+<h4 class="fw-bold mb-3 d-flex justify-content-between align-items-center">
+    📸 Dziennik obserwacji
+    <a href="{% url 'observations:add' %}?plant_id={{ plant.id }}" class="btn btn-sm btn-outline-success">+ Dodaj obserwację</a>
+</h4>
+
+{% with plant.obserwacje.all|dictsortreversed:"data" as sorted_observations %}
+{% if sorted_observations %}
+    <div class="row g-3">
+        {% for obs in sorted_observations %}
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100">
+                    {% if obs.zdjecie %}
+                        <img src="{{ obs.zdjecie.url }}" class="card-img-top" alt="obserwacja">
+                    {% endif %}
+                    <div class="card-body">
+                        <p class="card-text">{{ obs.opis|default:"(Brak opisu)" }}</p>
+                        <p class="text-muted small mb-0">Data: {{ obs.data }}</p>
+                        <div class="d-flex gap-2 mt-2">
+                            <a href="{% url 'observations:edit' obs.pk %}" class="btn btn-sm btn-outline-primary">Edytuj</a>
+                            <a href="{% url 'observations:delete' obs.pk %}" class="btn btn-sm btn-outline-danger">Usuń</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info">Brak obserwacji dla tej rośliny.</div>
+{% endif %}
+{% endwith %}
 {% endblock %}

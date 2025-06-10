@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+  <h2 class="fw-bold mb-4 text-center">
+    <span class="me-2">❓</span>Najczęściej zadawane pytania (FAQ)
+  </h2>
+
+  <div class="accordion" id="faqAccordion">
+    <!-- Grupa 1: Zadania -->
+    <div class="accordion-item border border-success mb-3">
+      <h2 class="accordion-header">
+        <button class="accordion-button bg-success text-white" type="button" data-bs-toggle="collapse" data-bs-target="#faqTasks">
+          📋 Zadania
+        </button>
+      </h2>
+      <div id="faqTasks" class="accordion-collapse collapse show">
+        <div class="accordion-body">
+          <ul>
+            <li><strong>Jak dodać nowe zadanie?</strong> – Kliknij przycisk "Dodaj zadanie" w zakładce Zadania.</li>
+            <li><strong>Jak oznaczyć zadanie jako wykonane?</strong> – Użyj przycisku ✅ Wykonaj obok zadania.</li>
+            <li><strong>Czy mogę edytować istniejące zadanie?</strong> – Tak, kliknij Edytuj obok wybranego zadania.</li>
+            <li><strong>Jak często sprawdzane są zadania?</strong> – Zadania są aktualizowane codziennie na podstawie Twojego harmonogramu.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grupa 2: Rośliny -->
+    <div class="accordion-item border border-primary mb-3">
+      <h2 class="accordion-header">
+        <button class="accordion-button bg-primary text-white" type="button" data-bs-toggle="collapse" data-bs-target="#faqPlants">
+          🌱 Rośliny
+        </button>
+      </h2>
+      <div id="faqPlants" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          <ul>
+            <li><strong>Jak dodać nową roślinę?</strong> – Przejdź do sekcji Moje rośliny i kliknij Dodaj roślinę.</li>
+            <li><strong>Jak zmienić interwały pielęgnacji?</strong> – Edytuj roślinę i ustaw wartości interwałów.</li>
+            <li><strong>Czy mogę usunąć roślinę?</strong> – Tak, kliknij Usuń na karcie rośliny.</li>
+            <li><strong>Czy mogę dodać zdjęcie rośliny?</strong> – Tak, podczas tworzenia lub edycji możesz dodać zdjęcie.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grupa 3: Obserwacje -->
+    <div class="accordion-item border border-info mb-3">
+      <h2 class="accordion-header">
+        <button class="accordion-button bg-info text-white" type="button" data-bs-toggle="collapse" data-bs-target="#faqObservations">
+          👁️ Obserwacje
+        </button>
+      </h2>
+      <div id="faqObservations" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          <ul>
+            <li><strong>Jak dodać obserwację?</strong> – W sekcji Obserwacje kliknij Dodaj obserwację.</li>
+            <li><strong>Czy mogę dodać zdjęcie do obserwacji?</strong> – Tak, zdjęcie jest opcjonalne, ale zalecane.</li>
+            <li><strong>Jak edytować istniejącą obserwację?</strong> – Kliknij przycisk Edytuj przy danej obserwacji.</li>
+            <li><strong>Jakie dane są zapisywane w obserwacji?</strong> – Data, opis, zdjęcie i przypisana roślina.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grupa 4: Inne -->
+    <div class="accordion-item border border-secondary mb-3">
+      <h2 class="accordion-header">
+        <button class="accordion-button bg-secondary text-white" type="button" data-bs-toggle="collapse" data-bs-target="#faqOther">
+          ⚙️ Inne
+        </button>
+      </h2>
+      <div id="faqOther" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          <ul>
+            <li><strong>Czy mogę zobaczyć statystyki aktywności?</strong> – Tak! W zakładce "Statystyki" znajdziesz wykresy aktywności.</li>
+            <li><strong>Czy mogę używać aplikacji na telefonie?</strong> – Tak, strona działa dobrze na urządzeniach mobilnych.</li>
+            <li><strong>Czy moje dane są bezpieczne?</strong> – Tak, Twoje dane są przechowywane bezpiecznie na serwerze.</li>
+            <li><strong>Jak mogę się wylogować?</strong> – Kliknij na nazwę użytkownika w prawym górnym rogu i wybierz Wyloguj się.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

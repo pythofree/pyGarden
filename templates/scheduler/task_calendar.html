@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2 class="fw-bold mb-4">📅 Kalendarz zadań</h2>
+
+<div class="d-flex flex-wrap align-items-center gap-3 mb-3">
+  <input type="date" id="calendar-search" class="form-control" style="max-width: 250px;">
+  <a href="{% url 'tasks:add' %}" class="btn btn-primary">Dodaj zadanie</a>
+</div>
+
+<div id="calendar" class="bg-white p-3 rounded shadow-sm"></div>
+{% endblock %}
+
+{% block extrahead %}
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet">
+<style>
+  .fc-daygrid-day.highlighted {
+    background-color: #ffeeba !important;
+    border: 2px solid #ffc107 !important;
+    border-radius: 6px;
+  }
+</style>
+{% endblock %}
+
+{% block extrajs %}
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const calendarEl = document.getElementById('calendar');
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth',
+      locale: 'pl',
+      height: 'auto',
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,listWeek'
+      },
+      events: '/zadania/kalendarz/json/',
+      eventClick: function(info) {
+        const date = info.event.startStr;
+        window.location.href = `/zadania/kalendarz/dzien/${date}/`;
+      }
+    });
+
+    calendar.render();
+
+    document.getElementById('calendar-search').addEventListener('change', function () {
+      const selectedDate = this.value;
+      if (selectedDate) {
+        calendar.gotoDate(selectedDate);
+
+        document.querySelectorAll('.fc-daygrid-day.highlighted')
+          .forEach(el => el.classList.remove('highlighted'));
+
+        const cell = document.querySelector(`.fc-daygrid-day[data-date="${selectedDate}"]`);
+        if (cell) {
+          cell.classList.add('highlighted');
+        }
+      }
+    });
+  });
+</script>
+{% endblock %}

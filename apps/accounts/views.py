@@ -8,6 +8,34 @@ from django.contrib.auth.models import User
 from .models import UserProfile
 from .forms import UserRegisterForm, UserProfileForm
 
+from django.shortcuts import render
+
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from apps.scheduler.models import Task
+from apps.observations.models import Observation
+
+@login_required
+def export_json(request):
+    user = request.user
+
+    zadania = list(Task.objects.filter(user=user).values(
+        'plant__nazwa', 'typ__nazwa', 'data', 'opis', 'wykonane'
+    ))
+    obserwacje = list(Observation.objects.filter(user=user).values(
+        'plant__nazwa', 'data', 'opis'
+    ))
+
+    data = {
+        "zadania": zadania,
+        "obserwacje": obserwacje
+    }
+
+    response = JsonResponse(data, safe=False)
+    response['Content-Disposition'] = 'attachment; filename=dane.json'
+    return response
+
+
 class RegisterView(CreateView):
     model = User
     form_class = UserRegisterForm

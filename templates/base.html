@@ -2,72 +2,143 @@
 <html lang="pl">
 {% load static %}
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PyGarden</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PyGarden</title>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom styles -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet">
+  {% block extrahead %}{% endblock %}
 </head>
-<body>
 
-<!-- Навигация -->
-<nav class="navbar navbar-expand-lg">
-    <div class="container">
-        <a class="navbar-brand" href="{% url 'plants:list' %}">🌿 PyGarden</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+<body class="d-flex flex-column min-vh-100">
 
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'plants:list' %}">Moje rośliny</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'tasks:list' %}">Zadania</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'observations:list' %}">Obserwacje</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'analytics:statistics' %}">Statystyki</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                            {{ user.username }}
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="{% url 'accounts:profile' %}">Profil</a></li>
-                            <li><a class="dropdown-item" href="/admin/">Admin</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{% url 'accounts:logout' %}">Wyloguj się</a></li>
-                        </ul>
-                    </li>
-                {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'accounts:login' %}">Zaloguj się</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'accounts:register' %}">Rejestracja</a>
-                    </li>
-                {% endif %}
+<!-- 🔷 НАВИГАЦИЯ -->
+<nav class="navbar navbar-expand-lg navbar-animate sticky-top">
+  <div class="container" style="overflow: visible;">
+    <a class="navbar-brand" href="{% url 'plants:list' %}">🌿 PyGarden</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        {% if user.is_authenticated %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'plants:list' %}"><i class="fa fa-leaf"></i> Moje rośliny</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'tasks:calendar' %}"><i class="fa fa-check-square"></i> Zadania</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'observations:list' %}"><i class="fa fa-eye"></i> Obserwacje</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'analytics:statistics' %}"><i class="fa fa-chart-line"></i> Statystyki</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'faq' %}"><i class="fa fa-question-circle"></i> FAQ</a></li>
+          <li class="nav-item dropdown d-flex align-items-center gap-2">
+            <img src="https://www.gravatar.com/avatar/?s=28&d=identicon" class="rounded-circle" style="width: 28px; height: 28px;" alt="avatar">
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" data-bs-toggle="dropdown">{{ user.username }}</a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="{% url 'accounts:profile' %}"><i class="fa fa-user"></i> Profil</a></li>
+              <li><a class="dropdown-item" href="/admin/"><i class="fa fa-cog"></i> Admin</a></li>
+              <li><hr class="dropdown-divider" /></li>
+              <li><a class="dropdown-item" href="{% url 'accounts:logout' %}"><i class="fa fa-sign-out-alt"></i> Wyloguj się</a></li>
             </ul>
-        </div>
+          </li>
+        {% else %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'accounts:login' %}">Zaloguj się</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'accounts:register' %}">Rejestracja</a></li>
+        {% endif %}
+      </ul>
     </div>
+  </div>
 </nav>
 
-<!-- Контент -->
-<div class="container py-4">
-    {% block content %}{% endblock %}
+<!-- 🔔 Оповещения -->
+{% if tasks_today %}
+<div class="alert alert-primary d-flex justify-content-between align-items-start fade show shadow-sm" role="alert" id="task-alert" style="animation: fade-in 0.5s ease-out;">
+  <div>
+    <strong>📌 Masz dziś {{ tasks_today|length }} zadanie{{ tasks_today|length|pluralize:"e,a" }} do wykonania:</strong>
+    <ul class="mb-0 mt-1">
+      {% for task in tasks_today %}
+        <li>
+          {{ task.data }} – <strong>{{ task.typ.nazwa }}</strong> ({{ task.plant.nazwa }})
+          <a href="{% url 'tasks:edit' task.pk %}" class="btn btn-sm btn-outline-primary ms-2">✏️</a>
+          {% if not task.wykonane %}
+            <a href="{% url 'tasks:mark_done' task.pk %}" class="btn btn-sm btn-outline-success">✅</a>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+  <button type="button" class="btn-close ms-3 mt-1" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 
-<!-- Скрипты -->
+<style>
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+
+<script>
+  setTimeout(function () {
+    const alert = document.getElementById('task-alert');
+    if (alert) alert.classList.remove('show');
+  }, 8000);
+</script>
+{% endif %}
+
+<!-- 📦 Основной контент -->
+<div class="container py-4 flex-grow-1">
+  {% block content %}{% endblock %}
+</div>
+
+<!-- ⚙️ СКРИПТЫ -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+
+<script>
+  const dropdownToggle = document.getElementById("userDropdown");
+  const dropdownMenu = document.querySelector(".dropdown-menu");
+  if (dropdownToggle && dropdownMenu) {
+    dropdownToggle.addEventListener("click", function () {
+      setTimeout(() => {
+        const rect = dropdownToggle.getBoundingClientRect();
+        dropdownMenu.style.position = "fixed";
+        dropdownMenu.style.top = `${rect.bottom + 6}px`;
+        dropdownMenu.style.left = `${rect.right - dropdownMenu.offsetWidth}px`;
+        dropdownMenu.style.zIndex = 3000;
+      }, 0);
+    });
+  }
+</script>
+{% block extrajs %}{% endblock %}
+
+<!-- 📌 ПОДВАЛ -->
+<footer class="bg-dark text-white mt-auto py-4">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <h5>🌿 PyGarden</h5>
+        <p class="text-muted">Twoje centrum opieki nad roślinami</p>
+        <p class="small">&copy; 2025 PyGarden</p>
+      </div>
+      <div class="col-md-4 mb-3">
+        <h6>🔗 Szybkie linki</h6>
+        <ul class="list-unstyled">
+          <li><a href="{% url 'plants:list' %}" class="text-white text-decoration-none">Moje rośliny</a></li>
+          <li><a href="{% url 'tasks:calendar' %}" class="text-white text-decoration-none">Zadania</a></li>
+          <li><a href="{% url 'observations:list' %}" class="text-white text-decoration-none">Obserwacje</a></li>
+          <li><a href="{% url 'analytics:statistics' %}" class="text-white text-decoration-none">Statystyki</a></li>
+          <li><a href="{% url 'faq' %}" class="text-white text-decoration-none">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="col-md-4 mb-3">
+        <h6>📬 Kontakt</h6>
+        <p class="mb-1">support@pygarden.pl</p>
+        <a href="mailto:support@pygarden.pl" class="btn btn-outline-light btn-sm">Napisz do nas</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
 </body>
 </html>

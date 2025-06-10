@@ -3,38 +3,119 @@
 
 {% block content %}
 <div class="container">
-    <h2 class="fw-bold mb-4">📊 Statystyki z ostatnich 30 dni</h2>
+  <h2 class="fw-bold mb-4">📊 Statystyki z ostatnich 30 dni</h2>
 
-    <div class="row g-4">
-        <div class="col-md-4">
-            <div class="card text-white bg-success h-100 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Zadania wykonane</h5>
-                    <p class="display-6">{{ tasks_done }}</p>
-                    <p class="card-text">Liczba zrealizowanych zadań</p>
-                </div>
-            </div>
+  <div class="row g-4 mb-5">
+    <div class="col-md-4">
+      <div class="card text-white bg-success h-100 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Zadania wykonane</h5>
+          <p class="display-6">{{ done_tasks }}</p>
+          <p class="card-text">Liczba zrealizowanych zadań</p>
         </div>
-
-        <div class="col-md-4">
-            <div class="card text-dark bg-warning h-100 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Zadania oczekujące</h5>
-                    <p class="display-6">{{ tasks_pending }}</p>
-                    <p class="card-text">Zadania zaplanowane, ale jeszcze niewykonane</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card text-white bg-info h-100 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Obserwacje</h5>
-                    <p class="display-6">{{ recent_observations }}</p>
-                    <p class="card-text">Dokonane obserwacje roślin</p>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+
+    <div class="col-md-4">
+      <div class="card text-dark bg-warning h-100 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Zadania oczekujące</h5>
+          <p class="display-6">{{ pending_tasks }}</p>
+          <p class="card-text">Zadania zaplanowane, ale jeszcze niewykonane</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card text-white bg-info h-100 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Obserwacje</h5>
+          <p class="display-6">{{ obs_count }}</p>
+          <p class="card-text">Dokonane obserwacje roślin</p>
+        </div>
+      </div>
+    </div>
+  </div>
+<div class="text-end mb-5">
+  <a href="{% url 'analytics:report_form' %}" class="btn btn-outline-primary">
+    📄 Generuj raport (Excel)
+  </a>
 </div>
+
+  <div class="card shadow-sm mb-5">
+    <div class="card-body">
+      <h5 class="card-title">📈 Wykres aktywności</h5>
+      <canvas id="tasksChart" height="100"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const ctx = document.getElementById('tasksChart').getContext('2d');
+    const tasksChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ chart_labels|safe }},
+            datasets: [
+                {
+                    label: 'Podlewanie',
+                    data: {{ chart_watering|safe }},
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    fill: true,
+                    tension: 0.3
+                },
+                {
+                    label: 'Nawożenie',
+                    data: {{ chart_fertilizing|safe }},
+                    borderColor: 'rgba(255, 206, 86, 1)',
+                    backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                    fill: true,
+                    tension: 0.3
+                },
+                {
+                    label: 'Przesadzanie',
+                    data: {{ chart_repotting|safe }},
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    fill: true,
+                    tension: 0.3
+                },
+                {
+                    label: 'Obserwacje',
+                    data: {{ chart_observations|safe }},
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    fill: true,
+                    tension: 0.3
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: true }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        maxRotation: 90,
+                        minRotation: 45,
+                        autoSkip: true
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    precision: 0,
+                    ticks: { stepSize: 1 }
+                }
+            }
+        }
+    });
+});
+</script>
+
 {% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<h2 class="fw-bold mb-4">📄 Generowanie raportu</h2>
+
+<form method="post" action="{% url 'analytics:generate_excel_report' %}">
+  {% csrf_token %}
+
+  <div class="mb-3">
+    <label class="form-label">Wybierz rośliny:</label>
+    {% for plant in plants %}
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="plants" value="{{ plant.id }}" id="plant{{ plant.id }}">
+        <label class="form-check-label" for="plant{{ plant.id }}">
+          {{ plant.nazwa }}
+        </label>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Zakres dat:</label>
+    <div class="d-flex gap-3 flex-wrap">
+      <input type="date" class="form-control" name="date_from" required>
+      <input type="date" class="form-control" name="date_to" required>
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-success">📥 Generuj raport (Excel)</button>
+</form>
+{% endblock %}

@@ -1,78 +1,74 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-
 from .models import Plant
 from .forms import PlantForm
+from apps.scheduler.models import Task
 
 class PlantListView(LoginRequiredMixin, ListView):
-    """
-    Список растений текущего пользователя.
-    """
     model = Plant
     template_name = 'plants/plant_list.html'
     context_object_name = 'plants'
     paginate_by = 10
 
     def get_queryset(self):
-        # Возвращаем только растения, принадлежащие текущему пользователю
         return Plant.objects.filter(user=self.request.user).order_by('-data_dodania')
 
 
 class PlantDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
-    """
-    Детальный просмотр конкретной Plant.
-    """
     model = Plant
     template_name = 'plants/plant_detail.html'
     context_object_name = 'plant'
 
     def test_func(self):
-        # Проверяем, что растение принадлежит текущему пользователю
+        return self.get_object().user == self.request.user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         plant = self.get_object()
-        return plant.user == self.request.user
+        context['zadania'] = Task.objects.filter(plant=plant, user=self.request.user).order_by('data')
+        return context
 
 
 class PlantCreateView(LoginRequiredMixin, CreateView):
-    """
-    Создание нового растения (Plant).
-    """
     model = Plant
     form_class = PlantForm
     template_name = 'plants/plant_form.html'
     success_url = reverse_lazy('plants:list')
 
     def form_valid(self, form):
-        # Устанавливаем user = текущий пользователь
         form.instance.user = self.request.user
         return super().form_valid(form)
 
 
 class PlantUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    """
-    Редактирование существующего растения.
-    """
     model = Plant
     form_class = PlantForm
     template_name = 'plants/plant_form.html'
     success_url = reverse_lazy('plants:list')
 
     def test_func(self):
-        # Растение можно редактировать только если оно принадлежит текущему пользователю
-        plant = self.get_object()
-        return plant.user == self.request.user
+        return self.get_object().user == self.request.user
 
 
 class PlantDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    """
-    Удаление растения.
-    """
     model = Plant
     template_name = 'plants/plant_confirm_delete.html'
     success_url = reverse_lazy('plants:list')
 
     def test_func(self):
-        # Удалять можно только свои растения
-        plant = self.get_object()
-        return plant.user == self.request.user
+        return self.get_object().user == self.request.user
+
+
+# ✅ Дополнительное представление: отметка задания как выполненного
+from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
+
+@login_required
+@require_POST
+def mark_task_done(request, pk):
+    task = get_object_or_404(Task, pk=pk, user=request.user)
+    task.wykonane = True
+    task.save()
+    return redirect(request.META.get('HTTP_REFERER', '/'))
